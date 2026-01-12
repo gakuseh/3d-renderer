@@ -28,9 +28,11 @@ func _process(delta: float) -> void:
 	#print('Polling done.')
 
 	if conn.get_status() != StreamPeerTCP.STATUS_CONNECTED:
-		#print('waiting')
-		#print(conn.get_status())
 		return
+
+	if conn.get_status() == StreamPeerTCP.STATUS_ERROR:
+		print("Stream Peer Status is error with no message to cleanly exit. Stopping.")
+		get_tree().quit(1)
 
 	var num_bytes_ready_to_read: int = conn.get_available_bytes()
 	#print('Num bytes ready: ' + str(num_bytes_ready_to_read))
@@ -88,7 +90,10 @@ func _process(delta: float) -> void:
 
 					right_viewport_container.material.set_shader_parameter("left_eye_angle_degrees", left_eye_horizontal_angle)
 					right_viewport_container.material.set_shader_parameter("right_eye_angle_degrees", right_eye_horizontal_angle)
-
+				5:
+					# Quit code
+					print("Renderer received quit. Stopping.")
+					get_tree().quit(0)
 
 			#print('End of match statement')
 	
