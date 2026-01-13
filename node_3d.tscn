@@ -1,14 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://dj0xeqrewbqua"]
+[gd_scene load_steps=14 format=3 uid="uid://dj0xeqrewbqua"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_popsf"]
 [ext_resource type="FontFile" uid="uid://cuvaxgq1bxcw4" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="2_rarv4"]
-[ext_resource type="PackedScene" uid="uid://bxhwcoimya1tu" path="res://miku.glb" id="3_50qcl"]
 [ext_resource type="Shader" path="res://lenticular_bars.gdshader" id="4_6100t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxfd8"]
 bg_color = Color(0, 0, 0, 1)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_dcsie"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gfqy5"]
 sun_angle_max = 32.1
@@ -70,13 +67,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_wxfd8")
 
-[node name="miku" parent="." instance=ExtResource("3_50qcl")]
-transform = Transform3D(-1.20094e-07, 0, 2.74744, 0, 2.74744, 0, -2.74744, 0, -1.20094e-07, -0.363, -0.40942, 0.006)
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(33.7475, 0, 0, 0, 0.997471, 0, 0, 0, 27.5859, 0, -0.397147, 0)
-mesh = SubResource("PlaneMesh_dcsie")
-
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_lhpsi")
 
@@ -110,7 +100,7 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="LeftCamera" type="Camera3D" parent="LeftViewportContainer/LeftViewport"]
-transform = Transform3D(0.5865, 0, 0.80995, 0, 1, 0, -0.80995, 0, 0.5865, 0.523747, 0.232818, 0.764275)
+transform = Transform3D(0.5865, 0, 0.80995, 0, 1, 0, -0.80995, 0, 0.5865, 0.96, 0.193, 0.202)
 
 [node name="RightViewportContainer" type="SubViewportContainer" parent="."]
 material = SubResource("ShaderMaterial_0hfyi")
@@ -128,7 +118,7 @@ size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
 [node name="RightCamera" type="Camera3D" parent="RightViewportContainer/RightViewport"]
-transform = Transform3D(-0.165048, 0, 0.986286, 0, 1, 0, -0.986286, 0, -0.165048, 1.08552, 0.355515, -0.313007)
+transform = Transform3D(-0.165048, 0, 0.986286, 0, 1, 0, -0.986286, 0, -0.165048, 0.98, 0.19, 0.05)
 
 [node name="Calibration" type="Control" parent="."]
 visible = false
