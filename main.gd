@@ -6,6 +6,18 @@ extends Node3D
 @export var left_viewport_container: SubViewportContainer
 @export var right_viewport_container: SubViewportContainer
 
+func load_glb_from_path(path: String) -> Variant:
+	var gltf_document_load = GLTFDocument.new()
+	var gltf_state_load = GLTFState.new()
+
+	var error = gltf_document_load.append_from_file(path, gltf_state_load)
+
+	if error == OK:
+		return gltf_document_load.generate_scene(gltf_state_load)
+	else:
+		print("Couldn't load glTF scene (error code: %s)." % error_string(error))
+		return error
+
 var conn
 var waiting_for_request: bool = true;
 # Called when the node enters the scene tree for the first time.
@@ -17,6 +29,13 @@ func _ready() -> void:
 	if result != OK:
 		#print('Failed to connect to controller program, with error code %d' % result)
 		get_tree().quit()
+	
+	var node = load_glb_from_path('/home/eric/Downloads/teto.glb')
+	if (typeof(node) == typeof(Node)):
+		add_child(node)
+	else:
+		print(error_string(node))
+		print('huh')
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -94,6 +113,8 @@ func _process(delta: float) -> void:
 					# Quit code
 					print("Renderer received quit. Stopping.")
 					get_tree().quit(0)
+
+					# Load a different object.				
 
 			#print('End of match statement')
 	
