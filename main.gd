@@ -6,6 +6,8 @@ extends Node3D
 @export var left_viewport_container: SubViewportContainer
 @export var right_viewport_container: SubViewportContainer
 
+var currently_loaded_object: Node
+
 func load_glb_from_path(path: String) -> Variant:
 	var gltf_document_load = GLTFDocument.new()
 	var gltf_state_load = GLTFState.new()
@@ -30,12 +32,14 @@ func _ready() -> void:
 		#print('Failed to connect to controller program, with error code %d' % result)
 		get_tree().quit()
 	
-	var node = load_glb_from_path('/home/eric/Downloads/teto.glb')
+	var node = load_glb_from_path('/home/eric/Downloads/tank-display.glb')
 	if (typeof(node) == typeof(Node)):
 		add_child(node)
 	else:
 		print(error_string(node))
 		print('huh')
+
+	currently_loaded_object = node
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -114,7 +118,20 @@ func _process(delta: float) -> void:
 					print("Renderer received quit. Stopping.")
 					get_tree().quit(0)
 
-					# Load a different object.				
+				6:
+					# Given a new path for a glb object. Load that object.
+					var path_string_length = conn.get_64()
+					var path_string = conn.get_string(path_string_length)
+
+					var node = load_glb_from_path(path_string)
+					if (typeof(node) == typeof(Node)):
+						add_child(node)
+						remove_child(currently_loaded_object)
+						currently_loaded_object = node
+					else:
+						print(error_string(node))
+						print('huh')
+
 
 			#print('End of match statement')
 	
