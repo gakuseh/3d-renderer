@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://dj0xeqrewbqua"]
+[gd_scene load_steps=15 format=3 uid="uid://dj0xeqrewbqua"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_popsf"]
 [ext_resource type="FontFile" uid="uid://cuvaxgq1bxcw4" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="2_rarv4"]
 [ext_resource type="Shader" path="res://lenticular_bars.gdshader" id="4_6100t"]
+[ext_resource type="PackedScene" uid="uid://bxhwcoimya1tu" path="res://miku.glb" id="4_d7e7g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxfd8"]
 bg_color = Color(0, 0, 0, 1)
@@ -188,3 +189,5 @@ offset_bottom = 10.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_cfum0")
+
+[node name="miku" parent="." instance=ExtResource("4_d7e7g")]

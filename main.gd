@@ -32,14 +32,7 @@ func _ready() -> void:
 		#print('Failed to connect to controller program, with error code %d' % result)
 		get_tree().quit()
 	
-	var node = load_glb_from_path('/home/eric/Downloads/tank-display.glb')
-	if (typeof(node) == typeof(Node)):
-		add_child(node)
-	else:
-		print(error_string(node))
-		print('huh')
-
-	currently_loaded_object = node
+	currently_loaded_object = get_node('miku')
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
