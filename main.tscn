@@ -1,0 +1,281 @@
+[gd_scene format=3 uid="uid://dj0xeqrewbqua"]
+
+[ext_resource type="Script" uid="uid://i5rljhmi3ys8" path="res://main.gd" id="1_1bvp3"]
+[ext_resource type="Shader" uid="uid://oldcd84bbc38" path="res://lenticular_bars.gdshader" id="2_lquwl"]
+[ext_resource type="FontFile" uid="uid://cuvaxgq1bxcw4" path="res://OpenSans-VariableFont_wdth,wght.ttf" id="3_7mycd"]
+[ext_resource type="Script" uid="uid://btnts8r2qf835" path="res://camera.gd" id="3_272bh"]
+[ext_resource type="PackedScene" uid="uid://bxhwcoimya1tu" path="res://miku.glb" id="4_272bh"]
+[ext_resource type="Texture2D" uid="uid://b7pxl5sfn8ysw" path="res://check.png" id="4_lquwl"]
+[ext_resource type="ArrayMesh" uid="uid://6aeasmrv422t" path="res://mask.obj" id="7_272bh"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gfqy5"]
+sky_top_color = Color(0.3359093, 0.6047375, 0.96406895, 1)
+sky_horizon_color = Color(0.3372549, 0.6039216, 0.9647059, 1)
+sky_energy_multiplier = 1.1
+ground_bottom_color = Color(0.8392292, 0.79030466, 0.73628545, 1)
+sun_angle_max = 32.1
+sun_curve = 0.0832178
+energy_multiplier = 1.55
+
+[sub_resource type="Sky" id="Sky_5fd8a"]
+sky_material = SubResource("ProceduralSkyMaterial_gfqy5")
+
+[sub_resource type="Environment" id="Environment_lhpsi"]
+background_mode = 2
+sky = SubResource("Sky_5fd8a")
+sky_custom_fov = 74.1
+ambient_light_source = 3
+ambient_light_color = Color(0.986524, 0.953838, 0.979893, 1)
+ambient_light_energy = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wxfd8"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3dh4"]
+bg_color = Color(0, 1, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xma4c"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5spa0"]
+bg_color = Color(1, 0.392855, 0.324508, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cfum0"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7mycd"]
+albedo_texture = ExtResource("4_lquwl")
+uv1_scale = Vector3(125, 125, 125)
+texture_filter = 0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_272bh"]
+material = SubResource("StandardMaterial3D_7mycd")
+size = Vector2(500, 500)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_7mycd"]
+viewport_path = NodePath("LeftViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7mycd"]
+resource_local_to_scene = true
+shader = ExtResource("2_lquwl")
+shader_parameter/input_camera_texture = SubResource("ViewportTexture_7mycd")
+shader_parameter/homography_inv = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
+shader_parameter/for_left_eye = false
+shader_parameter/pixels_per_lens = 10.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_272bh"]
+viewport_path = NodePath("RightViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5vw27"]
+resource_local_to_scene = true
+shader = ExtResource("2_lquwl")
+shader_parameter/input_camera_texture = SubResource("ViewportTexture_272bh")
+shader_parameter/homography_inv = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
+shader_parameter/for_left_eye = true
+shader_parameter/pixels_per_lens = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_272bh"]
+bg_color = Color(1, 0, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="Main" type="Node3D" unique_id=1733237371 node_paths=PackedStringArray("pixel_density_calibration", "offset_calibration", "left_camera", "right_camera", "left_panel", "right_panel")]
+script = ExtResource("1_1bvp3")
+pixel_density_calibration = NodePath("PixelDensityCalibration")
+offset_calibration = NodePath("OffsetCalibration")
+left_camera = NodePath("LeftViewport/LeftCamera")
+right_camera = NodePath("RightViewport/RightCamera")
+left_panel = NodePath("LeftControl/LeftEyeUI")
+right_panel = NodePath("RightControl/RightEyeUI")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=684428602]
+environment = SubResource("Environment_lhpsi")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=815191787]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.60919, 1.00285, -0.662523)
+shadow_enabled = true
+
+[node name="PixelDensityCalibration" type="Control" parent="." unique_id=174923381]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="Panel" parent="PixelDensityCalibration" unique_id=1830906160]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wxfd8")
+
+[node name="StartLine" type="Panel" parent="PixelDensityCalibration" unique_id=386606255]
+z_index = 100
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_right = 101.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_l3dh4")
+
+[node name="Panel" type="Panel" parent="PixelDensityCalibration" unique_id=1549593676]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xma4c")
+
+[node name="Label" type="Label" parent="PixelDensityCalibration" unique_id=729643179]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.699
+anchor_top = 0.085
+anchor_right = 0.913
+anchor_bottom = 0.385
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_7mycd")
+theme_override_font_sizes/font_size = 25
+text = "Place ruler along 
+white line.
+Start from 
+green line
+until red line.
+"
+
+[node name="EndLine" type="Panel" parent="PixelDensityCalibration" unique_id=1047265786]
+z_index = 177
+z_as_relative = false
+layout_mode = 1
+anchors_preset = -1
+anchor_bottom = 1.0
+offset_left = 600.0
+offset_right = 601.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_5spa0")
+
+[node name="HorizontalLine" type="Panel" parent="PixelDensityCalibration" unique_id=65127987]
+z_index = 100
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cfum0")
+
+[node name="Ground" type="MeshInstance3D" parent="." unique_id=1902268117]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.75, 0)
+mesh = SubResource("PlaneMesh_272bh")
+
+[node name="miku" parent="." unique_id=907983526 instance=ExtResource("4_272bh")]
+transform = Transform3D(16.525, 0, 0, 0, 16.525, 0, 0, 0, 16.525, 0, -2.4120996, -0.0954597)
+
+[node name="LeftControl" type="Control" parent="." unique_id=325341829]
+z_index = -10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftEyeUI" type="Panel" parent="LeftControl" unique_id=641912318]
+material = SubResource("ShaderMaterial_7mycd")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RightControl" type="Control" parent="." unique_id=1622877032]
+z_index = -10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RightEyeUI" type="Panel" parent="RightControl" unique_id=1042336888]
+material = SubResource("ShaderMaterial_5vw27")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftViewport" type="SubViewport" parent="." unique_id=1481684411]
+handle_input_locally = false
+size = Vector2i(2000, 2000)
+render_target_update_mode = 4
+
+[node name="LeftCamera" type="Camera3D" parent="LeftViewport" unique_id=1703404445 node_paths=PackedStringArray("display_panel", "parent_subviewport")]
+transform = Transform3D(0.9947034, 0, -0.10279259, 0, 1, 0, 0.10279259, 0, 0.9947034, -1.25, 0, 12)
+script = ExtResource("3_272bh")
+display_size = Vector2(11.25, 7.5)
+display_panel = NodePath("../../LeftControl/LeftEyeUI")
+parent_subviewport = NodePath("..")
+
+[node name="RightViewport" type="SubViewport" parent="." unique_id=224469288]
+handle_input_locally = false
+size = Vector2i(2000, 2000)
+render_target_update_mode = 4
+
+[node name="RightCamera" type="Camera3D" parent="RightViewport" unique_id=1155814179 node_paths=PackedStringArray("display_panel", "parent_subviewport")]
+transform = Transform3D(0.9947028, 0, 0.10279253, 0, 1, 0, -0.10279253, 0, 0.9947028, 1.25, 0, 12)
+script = ExtResource("3_272bh")
+display_size = Vector2(11.25, 7.5)
+display_panel = NodePath("../../RightControl/RightEyeUI")
+parent_subviewport = NodePath("..")
+
+[node name="Mask" type="MeshInstance3D" parent="." unique_id=1067621834]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
+mesh = ExtResource("7_272bh")
+
+[node name="OffsetCalibration" type="Control" parent="." unique_id=424862425]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="Panel" parent="OffsetCalibration" unique_id=467421925]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_wxfd8")
+
+[node name="Panel" type="Panel" parent="OffsetCalibration" unique_id=1575422881]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_272bh")
