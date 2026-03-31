@@ -1,6 +1,7 @@
 extends Node3D
 
-@export var calibration_ui: Control
+@export var pixel_density_calibration: Control
+@export var offset_calibration: Control
 @export var left_camera: Camera3D
 @export var right_camera: Camera3D
 @export var left_panel: Panel
@@ -60,20 +61,20 @@ func _process(delta: float) -> void:
 			var request_code: int = conn.get_64()
 			
 
-			print('RENDERER: Request code is ' + str(request_code))
+			#print('RENDERER: Request code is ' + str(request_code))
 
 			match request_code:
 				0:
 					# Show calibration window
-					calibration_ui.visible = true
+					pixel_density_calibration.visible = true
 				1:
 					# Hide calibration window
-					calibration_ui.visible = false
+					pixel_density_calibration.visible = false
 				2: 
 					# Getting pixels_per_lens, which is the only parameter we need from the 
 					# controller
 					var pixels_per_lens = conn.get_float()
-					print('Received code 2. Pixels per lens is ', pixels_per_lens)
+					#print('Received code 2. Pixels per lens is ', pixels_per_lens)
 					left_panel.material.set_shader_parameter("pixels_per_lens", pixels_per_lens)
 					right_panel.material.set_shader_parameter("pixels_per_lens", pixels_per_lens)
 
@@ -81,7 +82,7 @@ func _process(delta: float) -> void:
 					conn.put_64(get_viewport().get_visible_rect().size.x)
 				4:
 					# New eye positions
-					print('RENDERER: Got new eye positions.')
+					#print('RENDERER: Got new eye positions.')
 					var l_x: float = conn.get_float()
 					var l_y: float = conn.get_float()
 					var l_z: float = conn.get_float()
@@ -96,11 +97,11 @@ func _process(delta: float) -> void:
 					left_camera.look_at(Vector3(0, 0, 0), Vector3.UP)
 					right_camera.look_at(Vector3(0, 0, 0), Vector3.UP)
 					
-					print('Left eye is: ', left_camera.position, 'Right eye is: ', right_camera.position)
+					#print('Left eye is: ', left_camera.position, 'Right eye is: ', right_camera.position)
 
 				5:
 					# Quit code
-					print("Renderer received quit. Stopping.")
+					#print("Renderer received quit. Stopping.")
 					get_tree().quit(0)
 
 				6:
@@ -118,7 +119,12 @@ func _process(delta: float) -> void:
 						# print(error_string(node))
 						# print('huh')
 					
-
+				7:
+					# Show Offset Calibration
+					offset_calibration.visible = true
+				8:
+					# Hide calibration window
+					offset_calibration.visible = false
 
 			#print('End of match statement')
 	
