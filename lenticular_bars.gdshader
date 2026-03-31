@@ -1,30 +1,56 @@
 shader_type canvas_item;
 
-uniform float left_eye_angle_degrees = 0.0;
-uniform float right_eye_angle_degrees = 1.0;
-uniform float index_of_refraction = 1.5;
-uniform float pixels_per_lens = 10.0;
-uniform bool for_left_eye = true;
+uniform sampler2D input_camera_texture;
+uniform mat3 homography_inv; 
+uniform bool for_left_eye;
+uniform float pixels_per_lens;
 
-float f_prime(float x) {
-	return (x*-1.0)/sqrt(1.0-x*x);
-}
-
-float t(float x) {
-	return degrees(asin(index_of_refraction*sin(atan(f_prime(x)))) - atan(f_prime(x)));
+float show_pixel_for_left_eye(float x) {
+	// If this pixel is for the left eye, returns 1. Else, 0. Requires pixels_per_lens.
+	return ceil(mod(x, pixels_per_lens)/pixels_per_lens - 0.5);
 }
 
 void fragment() {
-	float pixel_exit_angle_degrees = t(2.0*mod(float(FRAGCOORD.x), pixels_per_lens)/pixels_per_lens - 1.0);
+	// Apply homography first
+	
+	// All this thing does it apply a homography on the input_camera_texture
+    // It doesn't actually apply the homography directly, instead doing 
+    // something equivalent.
+    //
+    // We need the inverse homography. We take a destination coordinate, and 
+    // find the corresponding source coordinate, on the input_camera_texture,
+    // that would have mapped to this destination coordinate, if we applied 
+    // the homography directly. We copy the color from the input, then apply it
+    // to the output.
+    //
+    // We are completely working in UV coordinates. This means each pixel has
+    // An x and y of 0.0 to 1.0, or percentage of screen. Origin is at top left.
+    // If you've calculated the homography matrix correctly this should not matter
 
-    if (isnan(pixel_exit_angle_degrees)) {
-        COLOR.a = 0.0;
+    // Turn the UV coordinate into a UV homogenous coordinate
+    vec3 uv_h = vec3(UV, 1.0); 
+    
+    // Find what the source UV coordinate would've been
+    // Remember this is still homogenous coordinate
+    vec3 src_uv_h = homography_inv * uv_h; 
+    
+    // Divide by the last element in the homogenous coordinate to turn it back
+    // into standard UV coordinate.
+    vec2 src_uv = src_uv_h.xy / src_uv_h.z;
+    
+
+    if (src_uv.x < 0.0 || src_uv.x > 1.0 || src_uv.y < 0.0 || src_uv.y > 1.0) {
+        // If the src_uv is out of bounds, just don't draw anything
+        COLOR = vec4(0.0);
     } else {
-        if (abs(left_eye_angle_degrees - pixel_exit_angle_degrees) > abs(right_eye_angle_degrees - pixel_exit_angle_degrees)) {
-            // Closer to right eye, make it transparent
-            COLOR.a = for_left_eye ? 0.0 : 1.0;
-        } else {
-            COLOR.a = for_left_eye ? 1.0 : 0.0;
-        }
+        // Otherwise, copy the color from the source and place it into the destination
+        vec4 color = texture(input_camera_texture, src_uv);
+        COLOR = color.rgba;
     }
-}
+	
+    if (for_left_eye) {
+        COLOR.a = show_pixel_for_left_eye(FRAGCOORD.x);
+    } else {
+        COLOR.a = 1.0-show_pixel_for_left_eye(FRAGCOORD.x);
+    }
+}   
