@@ -227,7 +227,7 @@ render_target_update_mode = 4
 [node name="LeftCamera" type="Camera3D" parent="LeftViewport" unique_id=1703404445 node_paths=PackedStringArray("display_panel", "parent_subviewport")]
 transform = Transform3D(0.9947034, 0, -0.10279259, 0, 1, 0, 0.10279259, 0, 0.9947034, -1.25, 0, 12)
 script = ExtResource("3_272bh")
-display_size = Vector2(11.25, 7.5)
+display_density_ppi = 100.0
 display_panel = NodePath("../../LeftControl/LeftEyeUI")
 parent_subviewport = NodePath("..")
 
@@ -239,7 +239,7 @@ render_target_update_mode = 4
 [node name="RightCamera" type="Camera3D" parent="RightViewport" unique_id=1155814179 node_paths=PackedStringArray("display_panel", "parent_subviewport")]
 transform = Transform3D(0.9947028, 0, 0.10279253, 0, 1, 0, -0.10279253, 0, 0.9947028, 1.25, 0, 12)
 script = ExtResource("3_272bh")
-display_size = Vector2(11.25, 7.5)
+display_density_ppi = 100.0
 display_panel = NodePath("../../RightControl/RightEyeUI")
 parent_subviewport = NodePath("..")
 

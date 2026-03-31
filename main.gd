@@ -71,12 +71,15 @@ func _process(delta: float) -> void:
 					# Hide calibration window
 					pixel_density_calibration.visible = false
 				2: 
-					# Getting pixels_per_lens, which is the only parameter we need from the 
-					# controller
+					# Getting pixels_per_lens and display density, in pixels per inch
 					var pixels_per_lens = conn.get_float()
-					#print('Received code 2. Pixels per lens is ', pixels_per_lens)
+					var display_density_ppi = conn.get_float()
 					left_panel.material.set_shader_parameter("pixels_per_lens", pixels_per_lens)
 					right_panel.material.set_shader_parameter("pixels_per_lens", pixels_per_lens)
+					
+					# The camera scripts need the display density to calculate the display size
+					left_camera.display_density_ppi = display_density_ppi
+					right_camera.display_density_ppi = display_density_ppi
 
 				3:
 					conn.put_64(get_viewport().get_visible_rect().size.x)
@@ -114,10 +117,6 @@ func _process(delta: float) -> void:
 						add_child(node)
 						remove_child(currently_loaded_object)
 						currently_loaded_object = node
-					else:
-						pass
-						# print(error_string(node))
-						# print('huh')
 					
 				7:
 					# Show Offset Calibration

@@ -1,8 +1,10 @@
 extends Camera3D
 
-@export var display_size: Vector2 # In inches, meters, whatever. Not pixels. Real units.
+@export var display_density_ppi: float
 @export var display_panel: Panel
 @export var parent_subviewport: SubViewport
+
+var display_size: Vector2
 
 var shader_material: ShaderMaterial
 
@@ -20,6 +22,8 @@ func _process(delta: float) -> void:
 	if not did_ready_run:
 		return
 	
+	display_size = display_panel.size/display_density_ppi
+		
 	shader_material.set_shader_parameter("homography_inv", get_homography(position, display_size, fov, rotation.y, -rotation.x, parent_subviewport.size))
 
 # Units of virtual camera position and display size must be in same units. That's it. You don't need
