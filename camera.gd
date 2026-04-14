@@ -89,7 +89,7 @@ func get_homography(virtual_camera_position: Vector3, display_size: Vector2, vir
 	var translation_mat = Basis(
 		Vector3(1, 0, 0),
 		Vector3(0, 1, 0),
-		Vector3(position.x/display_size.x, -position.y/display_size.y, 1)
+		Vector3(virtual_camera_position.x/display_size.x, -virtual_camera_position.y/display_size.y, 1)
 	)
 	
 	# For the horizontal intrinsic component, it is based on also the horizontal FOV calculation,

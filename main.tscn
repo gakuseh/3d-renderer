@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bxhwcoimya1tu" path="res://miku.glb" id="4_272bh"]
 [ext_resource type="Texture2D" uid="uid://b7pxl5sfn8ysw" path="res://check.png" id="4_lquwl"]
 [ext_resource type="ArrayMesh" uid="uid://6aeasmrv422t" path="res://mask.obj" id="7_272bh"]
+[ext_resource type="Shader" uid="uid://beksvhat0sqmb" path="res://anaglyph.gdshader" id="8_5vw27"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gfqy5"]
 sky_top_color = Color(0.3359093, 0.6047375, 0.96406895, 1)
@@ -80,6 +81,18 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5vw27"]
+viewport_path = NodePath("LeftViewport")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_kek77"]
+viewport_path = NodePath("RightViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kek77"]
+resource_local_to_scene = true
+shader = ExtResource("8_5vw27")
+shader_parameter/left_eye = SubResource("ViewportTexture_5vw27")
+shader_parameter/right_eye = SubResource("ViewportTexture_kek77")
 
 [node name="Main" type="Node3D" unique_id=1733237371 node_paths=PackedStringArray("pixel_density_calibration", "offset_calibration", "left_camera", "right_camera", "left_panel", "right_panel")]
 script = ExtResource("1_1bvp3")
@@ -279,3 +292,22 @@ offset_bottom = 5.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_272bh")
+
+[node name="AnaglyphControl" type="Control" parent="." unique_id=1776994617]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Panel" type="Panel" parent="AnaglyphControl" unique_id=1790326410]
+material = SubResource("ShaderMaterial_kek77")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
