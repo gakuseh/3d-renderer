@@ -3,17 +3,21 @@ extends Camera3D
 @export var display_density_ppi: float
 @export var display_panel: Panel
 @export var parent_subviewport: SubViewport
+@export var anaglyph_panel: Panel
+@export var is_left_eye: bool
 
 var display_size: Vector2
 
-var shader_material: ShaderMaterial
+var lenticule_shader_material: ShaderMaterial
+var anaglyph_shader_material: ShaderMaterial
 
 var did_ready_run = false
 
 func _ready() -> void:
 	await RenderingServer.frame_post_draw
 	
-	shader_material = display_panel.material
+	lenticule_shader_material = display_panel.material
+	anaglyph_shader_material = anaglyph_panel.material
 	
 	did_ready_run = true
 
@@ -23,8 +27,16 @@ func _process(delta: float) -> void:
 		return
 	
 	display_size = display_panel.size/display_density_ppi
+	
+	var homography: Basis = get_homography(position, display_size, fov, rotation.y, -rotation.x, parent_subviewport.size);
 		
-	shader_material.set_shader_parameter("homography_inv", get_homography(position, display_size, fov, rotation.y, -rotation.x, parent_subviewport.size))
+	lenticule_shader_material.set_shader_parameter("homography_inv", homography)
+
+	if is_left_eye:
+		anaglyph_shader_material.set_shader_parameter("left_homography_inv", homography)
+	else:
+		anaglyph_shader_material.set_shader_parameter("right_homography_inv", homography)
+	
 
 # Units of virtual camera position and display size must be in same units. That's it. You don't need
 # to do anything else

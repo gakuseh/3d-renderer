@@ -6,7 +6,6 @@
 [ext_resource type="Script" uid="uid://btnts8r2qf835" path="res://camera.gd" id="3_272bh"]
 [ext_resource type="PackedScene" uid="uid://bxhwcoimya1tu" path="res://miku.glb" id="4_272bh"]
 [ext_resource type="Texture2D" uid="uid://b7pxl5sfn8ysw" path="res://check.png" id="4_lquwl"]
-[ext_resource type="ArrayMesh" uid="uid://6aeasmrv422t" path="res://mask.obj" id="7_272bh"]
 [ext_resource type="Shader" uid="uid://beksvhat0sqmb" path="res://anaglyph.gdshader" id="8_5vw27"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gfqy5"]
@@ -93,6 +92,8 @@ resource_local_to_scene = true
 shader = ExtResource("8_5vw27")
 shader_parameter/left_eye = SubResource("ViewportTexture_5vw27")
 shader_parameter/right_eye = SubResource("ViewportTexture_kek77")
+shader_parameter/left_homography_inv = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
+shader_parameter/right_homography_inv = Basis(1, 0, 0, 0, 1, 0, 0, 0, 1)
 
 [node name="Main" type="Node3D" unique_id=1733237371 node_paths=PackedStringArray("pixel_density_calibration", "offset_calibration", "left_camera", "right_camera", "left_panel", "right_panel")]
 script = ExtResource("1_1bvp3")
@@ -193,10 +194,8 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_cfum0")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.75, 0)
 mesh = SubResource("PlaneMesh_272bh")
 
-[node name="miku" parent="." unique_id=907983526 instance=ExtResource("4_272bh")]
-transform = Transform3D(16.525, 0, 0, 0, 16.525, 0, 0, 0, 16.525, 0, -2.4120996, -0.0954597)
-
 [node name="LeftControl" type="Control" parent="." unique_id=325341829]
+visible = false
 z_index = -10
 layout_mode = 3
 anchors_preset = 15
@@ -215,6 +214,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="RightControl" type="Control" parent="." unique_id=1622877032]
+visible = false
 z_index = -10
 layout_mode = 3
 anchors_preset = 15
@@ -237,28 +237,27 @@ handle_input_locally = false
 size = Vector2i(2000, 2000)
 render_target_update_mode = 4
 
-[node name="LeftCamera" type="Camera3D" parent="LeftViewport" unique_id=1703404445 node_paths=PackedStringArray("display_panel", "parent_subviewport")]
+[node name="LeftCamera" type="Camera3D" parent="LeftViewport" unique_id=1703404445 node_paths=PackedStringArray("display_panel", "parent_subviewport", "anaglyph_panel")]
 transform = Transform3D(0.9947034, 0, -0.10279259, 0, 1, 0, 0.10279259, 0, 0.9947034, -1.25, 0, 12)
 script = ExtResource("3_272bh")
 display_density_ppi = 100.0
 display_panel = NodePath("../../LeftControl/LeftEyeUI")
 parent_subviewport = NodePath("..")
+anaglyph_panel = NodePath("../../AnaglyphControl/Panel")
+is_left_eye = true
 
 [node name="RightViewport" type="SubViewport" parent="." unique_id=224469288]
 handle_input_locally = false
 size = Vector2i(2000, 2000)
 render_target_update_mode = 4
 
-[node name="RightCamera" type="Camera3D" parent="RightViewport" unique_id=1155814179 node_paths=PackedStringArray("display_panel", "parent_subviewport")]
+[node name="RightCamera" type="Camera3D" parent="RightViewport" unique_id=1155814179 node_paths=PackedStringArray("display_panel", "parent_subviewport", "anaglyph_panel")]
 transform = Transform3D(0.9947028, 0, 0.10279253, 0, 1, 0, -0.10279253, 0, 0.9947028, 1.25, 0, 12)
 script = ExtResource("3_272bh")
 display_density_ppi = 100.0
 display_panel = NodePath("../../RightControl/RightEyeUI")
 parent_subviewport = NodePath("..")
-
-[node name="Mask" type="MeshInstance3D" parent="." unique_id=1067621834]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0, 0)
-mesh = ExtResource("7_272bh")
+anaglyph_panel = NodePath("../../AnaglyphControl/Panel")
 
 [node name="OffsetCalibration" type="Control" parent="." unique_id=424862425]
 visible = false
@@ -311,3 +310,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="miku2" parent="." unique_id=686922829 instance=ExtResource("4_272bh")]
+transform = Transform3D(9.3, 0, 0, 0, 9.3, 0, 0, 0, 9.3, -0.5135174, -1.1437871, -2.5018227)
