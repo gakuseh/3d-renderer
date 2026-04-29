@@ -195,7 +195,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.75, 0)
 mesh = SubResource("PlaneMesh_272bh")
 
 [node name="LeftControl" type="Control" parent="." unique_id=325341829]
-visible = false
 z_index = -10
 layout_mode = 3
 anchors_preset = 15
@@ -214,7 +213,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="RightControl" type="Control" parent="." unique_id=1622877032]
-visible = false
 z_index = -10
 layout_mode = 3
 anchors_preset = 15
@@ -293,6 +291,7 @@ grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_272bh")
 
 [node name="AnaglyphControl" type="Control" parent="." unique_id=1776994617]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

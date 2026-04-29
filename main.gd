@@ -124,6 +124,11 @@ func _process(delta: float) -> void:
 				8:
 					# Hide calibration window
 					offset_calibration.visible = false
+				9:
+					# Switch 3D mode
+					$LeftControl.visible = not $LeftControl.visible
+					$RightControl.visible = not $RightControl.visible
+					$AnaglyphControl.visible = not $AnaglyphControl.visible
 
 			#print('End of match statement')
 	
